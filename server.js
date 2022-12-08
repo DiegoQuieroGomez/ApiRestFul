@@ -14,27 +14,6 @@ routerProductos.get('/productos', (req, res) =>{
     res.json(productos)
 })
 
-/*
-app.post('/subir', upload.single('miArchivo'),(req, res, next) =>{
-    const file = req.file
-    if(!file) {
-        const error = new error('Error subiendo el archivo')
-        error.httStatusCode = 400
-        return next(error)
-    }
-    res.send(`Archivo ${file.originalname} subido exitosamente`)
-})
-*/
-
-routerProductos.get('/productos/:id', (req, res) => {
-    let productoID = productos.find(producto => producto.id = req.params.id)
-    if (productoID != null ) {
-        res.json(productoID)
-    }else{
-        res.json(`No existe un producto con ${id}`)
-    }      
-})
-
 routerProductos.post('/productos', (req, res) => {
     let count = 1
     let ultimo
@@ -43,10 +22,56 @@ routerProductos.post('/productos', (req, res) => {
         producto.id = count++
     });
     ultimo = productos.at(-1)
-    res.json(ultimo)
+    res.send(ultimo)
 })
 
+routerProductos.get('/productos/:id', (req, res) => {
+    let id = req.params.id
+    let productoID = productos.find(producto => producto.id == id)
+    if (productoID != null ) {
+        res.json(productoID)
+    }else {
+        res.send(`No existe un producto con id: ${id}`)
+    }
+        
+         
+})
 
+routerProductos.put('/productos/:id',(req,res) =>{
+    let id = req.params.id
+    let nuevoProducto = req.body
+    nuevoProducto.id = id
+    let productoID = productos.find(producto => producto.id == id)
+
+    if (productoID != null ) {
+
+        let indice = productoID.id
+        productos[indice-1] = nuevoProducto
+        res.send(productos[indice-1])
+        
+    }else{
+        
+        res.send(`No existe un producto con id: ${id}`)
+
+    }   
+
+})
+
+routerProductos.delete('/productos/:id',(req,res) =>{
+    let id = req.params.id
+    let productoID = productos.find(producto => producto.id == id)
+    if (productoID != null) {
+        let indice = identificar.id
+        productos.splice(indice -1 , 1)
+        res.send(productos)
+
+    } else {
+
+        res.send(`No existe un producto con id: ${id}`)
+    }
+    
+    
+})
 const PORT = 8080
 
 const server = app.listen(PORT, ()=>{
